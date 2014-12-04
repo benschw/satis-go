@@ -1,7 +1,7 @@
 satisapi-go
 composer.phar
-satis
+lib
 web
+test-web
 db.json
 test-db.json
-test-web
