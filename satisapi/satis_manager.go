@@ -7,12 +7,9 @@ type SatisManager struct {
 }
 
 func (s *SatisManager) saveRepo(repo SatisRepository) error {
-	job := UpdateJob{
-		Repository: repo,
-		ExitChan:   make(chan error),
-	}
+	job := NewSaveRepoJob(repo, true, make(chan error))
 
-	s.UpdateJobs <- job
+	s.UpdateJobs <- *job
 
 	return <-job.ExitChan
 }
