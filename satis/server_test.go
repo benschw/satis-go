@@ -16,7 +16,7 @@ type StubGenerator struct {
 }
 
 func (s *StubGenerator) Generate() error {
-	s.runs = 1
+	s.runs++
 	return nil
 }
 
@@ -35,7 +35,7 @@ func ARandomServer() *Server {
 	go s.Run()
 	time.Sleep(100 * time.Millisecond)
 
-	s.JobProcessor.Generator = stubGenerator
+	s.jobProcessor.Generator = stubGenerator
 	return s
 }
 
@@ -54,7 +54,7 @@ func TestGenerate(t *testing.T) {
 	if r != nil {
 		defer r.Close()
 	}
-	if status.Code != 200 {
+	if status.Code != 201 {
 		t.Errorf("Bad Status: %v", status)
 	}
 	if stubGenerator.runs != 1 {

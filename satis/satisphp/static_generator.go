@@ -19,7 +19,7 @@ type StaticWebGenerator struct {
 
 func (s *StaticWebGenerator) Generate() error {
 	_, err := exec.
-		Command(s.SatisPath+"bin/satis", "build", s.DbPath, s.WebPath).
+		Command(s.SatisPath+"bin/satis", "build", "--no-interaction", s.DbPath, s.WebPath).
 		Output()
 
 	return err

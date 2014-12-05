@@ -3,7 +3,9 @@ package satis
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/benschw/satisapi-go/satis/satisphp"
+	"github.com/benschw/satis-go/satis/api"
+	"github.com/benschw/satis-go/satis/satisphp"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -14,8 +16,6 @@ type SatisResource struct {
 
 // Regenerate static web docs
 func (r *SatisResource) generateStaticWeb(res http.ResponseWriter, req *http.Request) {
-
-	// regenerate satis-web
 	if err := r.SatisPhpClient.GenerateSatisWeb(); err != nil {
 		log.Print(err)
 
@@ -24,8 +24,8 @@ func (r *SatisResource) generateStaticWeb(res http.ResponseWriter, req *http.Req
 		return
 	}
 
-	res.WriteHeader(http.StatusOK)
-	fmt.Fprintf(res, "OK")
+	res.WriteHeader(http.StatusCreated)
+	res.Header().Set("Content-Type", "application/json")
 }
 
 // Add or update repository in Satis Repo and regenerate static web docs
@@ -47,6 +47,25 @@ func (r *SatisResource) saveRepo(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// marshal response
+	newRepo := api.NewRepo(repo.Type, repo.Url)
+	b, err := json.Marshal(newRepo)
+	if err != nil {
+		log.Print(err)
+		http.Error(res, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	res.Header().Set("Location", fmt.Sprintf("/api/repo/%d", newRepo.Id))
+	res.Header().Set("Content-Type", "application/json")
+	res.WriteHeader(http.StatusCreated)
+	fmt.Fprint(res, string(b[:]))
+}
+
+func (r *SatisResource) deleteRepo(res http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	_ = vars["id"]
+
+	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
-	fmt.Fprintf(res, "OK")
 }

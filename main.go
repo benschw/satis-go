@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/benschw/satisapi-go/satis"
+	"github.com/benschw/satis-go/satis"
 	"log"
 	"os"
 	"path/filepath"

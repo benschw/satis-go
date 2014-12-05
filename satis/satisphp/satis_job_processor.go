@@ -12,28 +12,42 @@ type SatisJobProcessor struct {
 	Generator Generator
 }
 
+// TODO: have this just run "Run()" and move functionality to jobs
 func (s *SatisJobProcessor) ProcessUpdates() {
 	var err error = nil
 	for {
-		update := <-s.Jobs
-		if update.Repository.Url != "" {
-			err = saveRepoInConfig(s.DbPath, update.Repository)
+		job := <-s.Jobs
+
+		switch t := interface{}(job); t.(type) {
+		// switch j := job.(type) {
+		case SaveRepoJob:
+
+			j := job.(SaveRepoJob)
+			err = saveRepoInConfig(s.DbPath, j.repository)
+
+		case FindAllJob:
+
+			j := job.(FindAllJob)
+			var repos []SatisRepository
+			repos, err = findAllRepos(s.DbPath)
+			j.reposResp <- repos // might be empty
 		}
-		if err == nil && update.Generate {
+
+		if err == nil && job.Generate() {
 			err = s.Generator.Generate()
 		}
 
-		update.ExitChan <- err
+		job.ExitChan() <- err
 
-		if update.Exit {
-			return
-		}
+		// if job.(type) == ExitJob && job.(ExitJob).exit {
+		// 	return
+		// }
 	}
 
 }
 
-func saveRepoInConfig(cfgPath string, repo SatisRepository) error {
-	cfgMgr := SatisDbManager{Path: cfgPath}
+func saveRepoInConfig(dbPath string, repo SatisRepository) error {
+	cfgMgr := SatisDbManager{Path: dbPath}
 
 	if err := cfgMgr.Load(); err != nil {
 		return err
@@ -47,4 +61,15 @@ func saveRepoInConfig(cfgPath string, repo SatisRepository) error {
 		return err
 	}
 	return nil
+}
+
+func findAllRepos(dbPath string) ([]SatisRepository, error) {
+	var repos []SatisRepository
+
+	cfgMgr := SatisDbManager{Path: dbPath}
+
+	if err := cfgMgr.Load(); err != nil {
+		return repos, err
+	}
+	return cfgMgr.Db.Repositories, nil
 }

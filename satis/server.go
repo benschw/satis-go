@@ -1,7 +1,7 @@
 package satis
 
 import (
-	"github.com/benschw/satisapi-go/satis/satisphp"
+	"github.com/benschw/satis-go/satis/satisphp"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -17,7 +17,7 @@ type Server struct {
 	Bind         string
 	Name         string
 	Homepage     string
-	JobProcessor satisphp.SatisJobProcessor
+	jobProcessor satisphp.SatisJobProcessor
 }
 
 func (s *Server) Run() error {
@@ -36,7 +36,7 @@ func (s *Server) Run() error {
 		WebPath:   s.WebPath,
 	}
 
-	s.JobProcessor = satisphp.SatisJobProcessor{
+	s.jobProcessor = satisphp.SatisJobProcessor{
 		DbPath:    s.DbPath,
 		Jobs:      jobs,
 		Generator: gen,
@@ -57,12 +57,13 @@ func (s *Server) Run() error {
 
 	r.HandleFunc("/api/generate-web-job", resource.generateStaticWeb).Methods("POST")
 	r.HandleFunc("/api/repo", resource.saveRepo).Methods("POST")
+	r.HandleFunc("/api/repo/{id}", resource.deleteRepo).Methods("DELETE")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir(s.WebPath)))
 
 	http.Handle("/", r)
 
 	// Start update processor
-	go s.JobProcessor.ProcessUpdates()
+	go s.jobProcessor.ProcessUpdates()
 
 	// Start HTTP Server
 	return http.ListenAndServe(s.Bind, nil)
