@@ -37,14 +37,14 @@ func (s *Server) Run() error {
 	}
 
 	s.jobProcessor = satisphp.SatisJobProcessor{
-		DbPath:    s.DbPath,
 		Jobs:      jobs,
 		Generator: gen,
 	}
 
 	// Client to Job Processor
 	satisClient := satisphp.SatisClient{
-		Jobs: jobs,
+		DbPath: s.DbPath,
+		Jobs:   jobs,
 	}
 
 	// route handlers

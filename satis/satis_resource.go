@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type SatisResource struct {
@@ -64,8 +65,51 @@ func (r *SatisResource) saveRepo(res http.ResponseWriter, req *http.Request) {
 
 func (r *SatisResource) deleteRepo(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
-	_ = vars["id"]
+	repoId, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Print(err)
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	repos, err := r.getAllRepos()
+	if err != nil {
+		log.Print(err)
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	var url string
+
+	for _, r := range repos {
+		if r.Id == repoId {
+			url = r.Url
+		}
+	}
+
+	if err = r.SatisPhpClient.DeleteRepo(url); err != nil {
+		if err.Error() == satisphp.NotFoundError {
+			res.WriteHeader(http.StatusNotFound)
+		} else {
+			log.Print(err)
+			res.WriteHeader(http.StatusInternalServerError)
+		}
+		return
+	}
 
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
+}
+
+func (r *SatisResource) getAllRepos() ([]*api.Repo, error) {
+	repos, err := r.SatisPhpClient.FindAllRepos()
+	rs := make([]*api.Repo, 0, len(repos))
+	if err != nil {
+		return rs, err
+	}
+
+	for _, r := range repos {
+		rs = append(rs, api.NewRepo(r.Type, r.Url))
+	}
+	return rs, nil
 }

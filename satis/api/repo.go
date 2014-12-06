@@ -5,16 +5,17 @@ import (
 )
 
 type Repo struct {
-	Id   uint32 `json:"id"`
+	Id   int    `json:"id"`
 	Type string `json:"type"`
 	Url  string `json:"url"`
 }
 
 func NewRepo(t string, u string) *Repo {
 	h := crc32.NewIEEE()
-	h.Write([]byte(u))
+	n, _ := h.Write([]byte(u))
+
 	return &Repo{
-		Id:   h.Sum32(),
+		Id:   n,
 		Type: t,
 		Url:  u,
 	}

@@ -33,14 +33,14 @@ func ARandomClient() *SatisClient {
 	gen = &StubGenerator{}
 
 	jobProcessor := SatisJobProcessor{
-		DbPath:    path,
 		Jobs:      jobs,
 		Generator: gen,
 	}
 
 	// Client to Job Processor
 	satisClient := &SatisClient{
-		Jobs: jobs,
+		DbPath: path,
+		Jobs:   jobs,
 	}
 
 	// Start update processor
@@ -67,6 +67,35 @@ func TestSave(t *testing.T) {
 	}
 }
 
+func TestDelete(t *testing.T) {
+
+	// given
+	c := ARandomClient()
+	repo1 := SatisRepository{
+		Type: "vcs",
+		Url:  "http://foo.bar",
+	}
+	repo2 := SatisRepository{
+		Type: "vcs",
+		Url:  "http://baz.boo",
+	}
+	c.SaveRepo(repo1)
+	c.SaveRepo(repo2)
+
+	// when
+	err := c.DeleteRepo(repo1.Url)
+
+	// then
+	if err != nil {
+		t.Error(err)
+	}
+	repos, _ := c.FindAllRepos()
+
+	if !reflect.DeepEqual(repos, []SatisRepository{repo2}) {
+		t.Errorf("repos don't match expected: %v", repos)
+	}
+}
+
 func TestFindAll(t *testing.T) {
 
 	// given
@@ -84,8 +113,8 @@ func TestFindAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	if reflect.DeepEqual([]SatisRepository{repo}, repos) {
-		t.Error(err)
+	if !reflect.DeepEqual([]SatisRepository{repo}, repos) {
+		t.Errorf("repos don't match expected: %v", repos)
 	}
 
 }
