@@ -3,6 +3,7 @@ package client
 import (
 	"github.com/benschw/satis-go/satis/satisphp/api"
 	"log"
+	"net/http"
 )
 
 var _ = log.Print
@@ -19,7 +20,7 @@ func (c *SatisClient) AddRepo(repo *api.Repo) (*api.Repo, error) {
 	if err != nil {
 		return r, err
 	}
-	err = processResponseEntity(req, &r, 201)
+	err = processResponseEntity(req, &r, http.StatusCreated)
 	return r, err
 }
 
@@ -31,7 +32,7 @@ func (c *SatisClient) FindAll() ([]api.Repo, error) {
 	if err != nil {
 		return repos, err
 	}
-	err = processResponseEntity(req, &repos, 201)
+	err = processResponseEntity(req, &repos, http.StatusOK)
 	return repos, err
 }
 
@@ -42,7 +43,7 @@ func (c *SatisClient) DeleteRepo(id string) error {
 	if err != nil {
 		return err
 	}
-	return processResponseEntity(req, nil, 204)
+	return processResponseEntity(req, nil, http.StatusNoContent)
 }
 
 func (c *SatisClient) Generate() error {
@@ -52,5 +53,5 @@ func (c *SatisClient) Generate() error {
 	if err != nil {
 		return err
 	}
-	return processResponseEntity(req, nil, 201)
+	return processResponseEntity(req, nil, http.StatusCreated)
 }

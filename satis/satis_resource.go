@@ -46,7 +46,7 @@ func (r *SatisResource) findAllRepos(res http.ResponseWriter, req *http.Request)
 	}
 
 	res.Header().Set("Content-Type", "application/json")
-	res.WriteHeader(http.StatusCreated)
+	res.WriteHeader(http.StatusOK)
 	fmt.Fprint(res, string(b[:]))
 }
 
