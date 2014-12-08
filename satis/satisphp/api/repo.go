@@ -1,21 +1,23 @@
 package api
 
 import (
+	"fmt"
 	"hash/crc32"
 )
 
 type Repo struct {
-	Id   int    `json:"id"`
+	Id   string `json:"id"`
 	Type string `json:"type"`
 	Url  string `json:"url"`
 }
 
 func NewRepo(t string, u string) *Repo {
-	h := crc32.NewIEEE()
-	n, _ := h.Write([]byte(u))
+	crc := crc32.NewIEEE()
+	crc.Write([]byte(u))
+	v := crc.Sum32()
 
 	return &Repo{
-		Id:   n,
+		Id:   fmt.Sprint(v),
 		Type: t,
 		Url:  u,
 	}

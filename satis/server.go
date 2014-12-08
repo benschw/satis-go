@@ -2,6 +2,8 @@ package satis
 
 import (
 	"github.com/benschw/satis-go/satis/satisphp"
+	"github.com/benschw/satis-go/satis/satisphp/db"
+	"github.com/benschw/satis-go/satis/satisphp/job"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -18,6 +20,7 @@ type Server struct {
 	Name         string
 	Homepage     string
 	jobProcessor satisphp.SatisJobProcessor
+	jobClient    satisphp.SatisClient
 }
 
 func (s *Server) Run() error {
@@ -27,7 +30,7 @@ func (s *Server) Run() error {
 	}
 
 	// Shared Jobs Channel to queue/process db modifications and generation task
-	jobs := make(chan satisphp.SatisJob)
+	jobs := make(chan job.SatisJob)
 
 	// Job Processor responsible for interacting with db & static web docs
 	gen := &satisphp.StaticWebGenerator{
@@ -42,14 +45,14 @@ func (s *Server) Run() error {
 	}
 
 	// Client to Job Processor
-	satisClient := satisphp.SatisClient{
+	jobClient := satisphp.SatisClient{
 		DbPath: s.DbPath,
 		Jobs:   jobs,
 	}
 
 	// route handlers
 	resource := &SatisResource{
-		SatisPhpClient: satisClient,
+		SatisPhpClient: jobClient,
 	}
 
 	// Configure Routes
@@ -57,6 +60,7 @@ func (s *Server) Run() error {
 
 	r.HandleFunc("/api/generate-web-job", resource.generateStaticWeb).Methods("POST")
 	r.HandleFunc("/api/repo", resource.saveRepo).Methods("POST")
+	r.HandleFunc("/api/repo", resource.findAllRepos).Methods("GET")
 	r.HandleFunc("/api/repo/{id}", resource.deleteRepo).Methods("DELETE")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir(s.WebPath)))
 
@@ -71,7 +75,7 @@ func (s *Server) Run() error {
 
 // Sync configured values to satis repository meta data
 func (s *Server) initDb() error {
-	dbMgr := &satisphp.SatisDbManager{Path: s.DbPath}
+	dbMgr := &db.SatisDbManager{Path: s.DbPath}
 
 	// create empty db if it doesn't exist
 	if _, err := os.Stat(s.DbPath); os.IsNotExist(err) {

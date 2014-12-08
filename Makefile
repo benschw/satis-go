@@ -9,7 +9,7 @@ clean:
 
 deps:
 	go get
-	go get github.com/gorilla/http
+	go get gopkg.in/check.v1
 
 satis:
 	curl -sS https://getcomposer.org/installer | php

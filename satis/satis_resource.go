@@ -3,12 +3,11 @@ package satis
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/benschw/satis-go/satis/api"
 	"github.com/benschw/satis-go/satis/satisphp"
+	"github.com/benschw/satis-go/satis/satisphp/api"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 type SatisResource struct {
@@ -21,7 +20,6 @@ func (r *SatisResource) generateStaticWeb(res http.ResponseWriter, req *http.Req
 		log.Print(err)
 
 		res.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(res, "Problem Generating Satis Repository\n%s", err)
 		return
 	}
 
@@ -29,9 +27,32 @@ func (r *SatisResource) generateStaticWeb(res http.ResponseWriter, req *http.Req
 	res.Header().Set("Content-Type", "application/json")
 }
 
+// Get All Repos
+func (r *SatisResource) findAllRepos(res http.ResponseWriter, req *http.Request) {
+
+	repos, err := r.SatisPhpClient.FindAllRepos()
+	if err != nil {
+		log.Print(err)
+		http.Error(res, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// marshal response
+	b, err := json.Marshal(repos)
+	if err != nil {
+		log.Print(err)
+		http.Error(res, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	res.Header().Set("Content-Type", "application/json")
+	res.WriteHeader(http.StatusCreated)
+	fmt.Fprint(res, string(b[:]))
+}
+
 // Add or update repository in Satis Repo and regenerate static web docs
 func (r *SatisResource) saveRepo(res http.ResponseWriter, req *http.Request) {
-	repo := &satisphp.SatisRepository{}
+	repo := &api.Repo{}
 
 	// unmarshal post body
 	decoder := json.NewDecoder(req.Body)
@@ -42,7 +63,7 @@ func (r *SatisResource) saveRepo(res http.ResponseWriter, req *http.Request) {
 	}
 
 	// save config and regenerate satis-web
-	if err := r.SatisPhpClient.SaveRepo(*repo); err != nil {
+	if err := r.SatisPhpClient.SaveRepo(repo); err != nil {
 		log.Print(err)
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
@@ -64,33 +85,13 @@ func (r *SatisResource) saveRepo(res http.ResponseWriter, req *http.Request) {
 }
 
 func (r *SatisResource) deleteRepo(res http.ResponseWriter, req *http.Request) {
-	vars := mux.Vars(req)
-	repoId, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		log.Print(err)
-		res.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	repoId := mux.Vars(req)["id"]
 
-	repos, err := r.getAllRepos()
-	if err != nil {
-		log.Print(err)
-		res.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	var url string
-
-	for _, r := range repos {
-		if r.Id == repoId {
-			url = r.Url
-		}
-	}
-
-	if err = r.SatisPhpClient.DeleteRepo(url); err != nil {
-		if err.Error() == satisphp.NotFoundError {
+	if err := r.SatisPhpClient.DeleteRepo(repoId); err != nil {
+		switch err {
+		case satisphp.ErrRepoNotFound:
 			res.WriteHeader(http.StatusNotFound)
-		} else {
+		default:
 			log.Print(err)
 			res.WriteHeader(http.StatusInternalServerError)
 		}
@@ -98,18 +99,5 @@ func (r *SatisResource) deleteRepo(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("Content-Type", "application/json")
-	res.WriteHeader(http.StatusOK)
-}
-
-func (r *SatisResource) getAllRepos() ([]*api.Repo, error) {
-	repos, err := r.SatisPhpClient.FindAllRepos()
-	rs := make([]*api.Repo, 0, len(repos))
-	if err != nil {
-		return rs, err
-	}
-
-	for _, r := range repos {
-		rs = append(rs, api.NewRepo(r.Type, r.Url))
-	}
-	return rs, nil
+	res.WriteHeader(http.StatusNoContent)
 }

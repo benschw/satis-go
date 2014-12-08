@@ -1,45 +1,90 @@
 package satisphp
 
 import (
+	"errors"
+	"github.com/benschw/satis-go/satis/satisphp/api"
+	"github.com/benschw/satis-go/satis/satisphp/db"
+	"github.com/benschw/satis-go/satis/satisphp/job"
 	"log"
 )
 
 var _ = log.Print
 
+var ErrRepoNotFound = errors.New("Repository Not Found")
+
 type SatisClient struct {
-	Jobs   chan SatisJob
+	Jobs   chan job.SatisJob
 	DbPath string
 }
 
-func (s *SatisClient) SaveRepo(repo SatisRepository) error {
-	job := NewSaveRepoJob(s.DbPath, repo, true)
+func (s *SatisClient) FindAllRepos() ([]api.Repo, error) {
+	j := job.NewFindAllJob(s.DbPath)
 
-	return s.performJob(job)
+	err := s.performJob(j)
+
+	repos := <-j.ReposResp
+
+	rs := make([]api.Repo, len(repos), len(repos))
+	for i, repo := range repos {
+		rs[i] = *api.NewRepo(repo.Type, repo.Url)
+	}
+
+	return rs, err
 }
 
-func (s *SatisClient) DeleteRepo(repo string) error {
-	job := NewDeleteRepoJob(s.DbPath, repo, true)
-
-	return s.performJob(job)
+func (s *SatisClient) SaveRepo(repo *api.Repo) error {
+	repoEntity := db.SatisRepository{
+		Type: repo.Type,
+		Url:  repo.Url,
+	}
+	j := job.NewSaveRepoJob(s.DbPath, repoEntity, true)
+	return s.performJob(j)
 }
 
-func (s *SatisClient) FindAllRepos() ([]SatisRepository, error) {
-	job := NewFindAllJob(s.DbPath)
+func (s *SatisClient) DeleteRepo(id string) error {
+	var toDelete api.Repo
 
-	err := s.performJob(job)
+	repos, err := s.FindAllRepos()
+	if err != nil {
+		return err
+	}
 
-	repos := <-job.reposResp
-	return repos, err
+	found := false
+	for _, r := range repos {
+		if r.Id == id {
+			found = true
+			toDelete = r
+		}
+	}
+
+	if found {
+		j := job.NewDeleteRepoJob(s.DbPath, toDelete.Url, true)
+		err = s.performJob(j)
+
+		switch err {
+		case job.ErrRepoNotFound:
+			return ErrRepoNotFound
+		default:
+			return err
+		}
+
+	} else {
+		return ErrRepoNotFound
+	}
 }
 
 func (s *SatisClient) GenerateSatisWeb() error {
-	job := NewGenerateJob()
-
-	return s.performJob(job)
+	j := job.NewGenerateJob()
+	return s.performJob(j)
 }
 
-func (s *SatisClient) performJob(job SatisJob) error {
-	s.Jobs <- job
+func (s *SatisClient) Shutdown() error {
+	j := job.NewExitJob()
+	return s.performJob(j)
+}
 
-	return <-job.ExitChan()
+func (s *SatisClient) performJob(j job.SatisJob) error {
+	s.Jobs <- j
+
+	return <-j.ExitChan()
 }

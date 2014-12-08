@@ -1,32 +1,63 @@
 package satisphp
 
 import (
+	"github.com/benschw/satis-go/satis/satisphp/job"
 	"log"
 )
 
 var _ = log.Printf
 
 type SatisJobProcessor struct {
-	Jobs      chan SatisJob
+	Jobs      chan job.SatisJob
 	Generator Generator
 }
 
-// TODO: have this just run "Run()" and move functionality to jobs
+// Run jobs added to Jobs chan
 func (s *SatisJobProcessor) ProcessUpdates() {
-	for {
-		job := <-s.Jobs
-		err := job.Run()
+	genCh := make(chan job.SatisJob, 10)
+	genExit := make(chan error, 1)
 
-		if err == nil && job.Generate() {
-			err = s.Generator.Generate()
+	go s.processGenerateJobs(genCh, genExit)
+
+	for {
+		j := <-s.Jobs
+		err := j.Run()
+		if err == nil && j.Generate() {
+			genCh <- j
 		}
 
-		job.ExitChan() <- err
+		// Exit the generation goroutine
+		switch j.(type) {
+		case *job.ExitJob:
+			genCh <- j
+			<-genExit
+		}
 
-		switch t := interface{}(job); t.(type) {
-		case ExitJob:
+		j.ExitChan() <- err
+
+		// Stop Processing
+		switch j.(type) {
+		case *job.ExitJob:
 			return
 		}
-	}
 
+	}
+}
+
+func (s *SatisJobProcessor) processGenerateJobs(genCh chan job.SatisJob, genExit chan error) {
+	for {
+		j := <-genCh
+
+		// Exit if job type is `ExitJob`
+		switch j.(type) {
+		case *job.ExitJob:
+			genExit <- nil
+			return
+		}
+
+		// Do Static Site Generation
+		if err := s.Generator.Generate(); err != nil {
+			log.Print(err)
+		}
+	}
 }

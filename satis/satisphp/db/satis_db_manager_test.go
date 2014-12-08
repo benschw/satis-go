@@ -1,4 +1,4 @@
-package satisphp
+package db
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ var _ = fmt.Print
 var _ = log.Print
 
 func ARandomDbMgr() SatisDbManager {
-	testPath := "../../test-db.json"
+	testPath := "../../../test-db.json"
 	mgr := SatisDbManager{Path: testPath}
 	mgr.Db.Name = "My Repo"
 	mgr.Db.Homepage = "http://repo.com"
