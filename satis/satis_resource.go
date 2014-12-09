@@ -87,7 +87,7 @@ func (r *SatisResource) saveRepo(res http.ResponseWriter, req *http.Request) {
 
 // save config and regenerate satis-web
 func (r *SatisResource) upsertRepo(repo *api.Repo) (string, error) {
-	if err := r.SatisPhpClient.SaveRepo(repo); err != nil {
+	if err := r.SatisPhpClient.SaveRepo(repo, true); err != nil {
 		return "", err
 	}
 
@@ -156,7 +156,7 @@ func (r *SatisResource) findAllRepos(res http.ResponseWriter, req *http.Request)
 func (r *SatisResource) deleteRepo(res http.ResponseWriter, req *http.Request) {
 	repoId := mux.Vars(req)["id"]
 
-	if err := r.SatisPhpClient.DeleteRepo(repoId); err != nil {
+	if err := r.SatisPhpClient.DeleteRepo(repoId, true); err != nil {
 		switch err {
 		case satisphp.ErrRepoNotFound:
 			res.WriteHeader(http.StatusNotFound)

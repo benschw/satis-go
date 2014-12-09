@@ -68,35 +68,36 @@ func TestSave(t *testing.T) {
 	repo := api.NewRepo("vcs", "http://foo.bar")
 
 	// when
-	err := c.SaveRepo(repo)
+	err := c.SaveRepo(repo, false)
 
 	// then
 	if err != nil {
 		t.Error(err)
+	}
+
+	c.Shutdown()
+	if gen.runs != 0 {
+		t.Errorf("generator run wrong number of times: %d", gen.runs)
 	}
 }
 
-func TestDelete(t *testing.T) {
+func TestSaveAndGenerate(t *testing.T) {
 
 	// given
 	c := ARandomClient()
-	repo1 := api.NewRepo("vcs", "http://foo.bar")
-	repo2 := api.NewRepo("vcs", "http://baz.boo")
-	c.SaveRepo(repo1)
-	c.SaveRepo(repo2)
+	repo := api.NewRepo("vcs", "http://foo.bar")
 
 	// when
-	err := c.DeleteRepo(repo1.Id)
+	err := c.SaveRepo(repo, true)
 
 	// then
 	if err != nil {
 		t.Error(err)
 	}
-	repos, _ := c.FindAllRepos()
 
-	expected := []api.Repo{*repo2}
-	if !reflect.DeepEqual(expected, repos) {
-		t.Errorf("repos don't match expected: %v / %v", repos, expected)
+	c.Shutdown()
+	if gen.runs != 1 {
+		t.Errorf("generator run wrong number of times: %d", gen.runs)
 	}
 }
 
@@ -105,7 +106,7 @@ func TestFindAll(t *testing.T) {
 	// given
 	c := ARandomClient()
 	repo := api.NewRepo("vcs", "http://foo.bar")
-	c.SaveRepo(repo)
+	c.SaveRepo(repo, false)
 	// when
 	repos, err := c.FindAllRepos()
 
@@ -117,7 +118,64 @@ func TestFindAll(t *testing.T) {
 	if !reflect.DeepEqual(expected, repos) {
 		t.Errorf("repos don't match expected: %v / %v", repos, expected)
 	}
+}
 
+func TestDelete(t *testing.T) {
+
+	// given
+	c := ARandomClient()
+	repo1 := api.NewRepo("vcs", "http://foo.bar")
+	repo2 := api.NewRepo("vcs", "http://baz.boo")
+	c.SaveRepo(repo1, false)
+	c.SaveRepo(repo2, false)
+
+	// when
+	err := c.DeleteRepo(repo1.Id, false)
+
+	// then
+	if err != nil {
+		t.Error(err)
+	}
+	repos, _ := c.FindAllRepos()
+
+	expected := []api.Repo{*repo2}
+	if !reflect.DeepEqual(expected, repos) {
+		t.Errorf("repos don't match expected: %v / %v", repos, expected)
+	}
+
+	c.Shutdown()
+	if gen.runs != 0 {
+		t.Errorf("generator run wrong number of times: %d", gen.runs)
+	}
+}
+
+func TestDeleteAndGenerate(t *testing.T) {
+
+	// given
+	c := ARandomClient()
+	repo1 := api.NewRepo("vcs", "http://foo.bar")
+	repo2 := api.NewRepo("vcs", "http://baz.boo")
+	c.SaveRepo(repo1, false)
+	c.SaveRepo(repo2, false)
+
+	// when
+	err := c.DeleteRepo(repo1.Id, true)
+
+	// then
+	if err != nil {
+		t.Error(err)
+	}
+	repos, _ := c.FindAllRepos()
+
+	expected := []api.Repo{*repo2}
+	if !reflect.DeepEqual(expected, repos) {
+		t.Errorf("repos don't match expected: %v / %v", repos, expected)
+	}
+
+	c.Shutdown()
+	if gen.runs != 1 {
+		t.Errorf("generator run wrong number of times: %d", gen.runs)
+	}
 }
 
 func TestGenerate(t *testing.T) {

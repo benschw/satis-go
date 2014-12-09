@@ -197,7 +197,7 @@ func ARandomServer() *Server {
 	s := &Server{
 		DbPath:    dbPath,
 		WebPath:   "../test-web/",
-		SatisPath: "../lib/satis/",
+		SatisPath: "../lib/satis",
 		Bind:      host,
 		Name:      "My Repo",
 		Homepage:  fmt.Sprintf("http://%s", host),

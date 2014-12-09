@@ -53,16 +53,23 @@ func (s *SatisClient) FindAllRepos() ([]api.Repo, error) {
 	return rs, err
 }
 
-func (s *SatisClient) SaveRepo(repo *api.Repo) error {
+func (s *SatisClient) SaveRepo(repo *api.Repo, generate bool) error {
 	repoEntity := db.SatisRepository{
 		Type: repo.Type,
 		Url:  repo.Url,
 	}
 	j := job.NewSaveRepoJob(s.DbPath, repoEntity, true)
-	return s.performJob(j)
+	if err := s.performJob(j); err != nil {
+		return err
+	}
+	if generate {
+		return s.GenerateSatisWeb()
+	} else {
+		return nil
+	}
 }
 
-func (s *SatisClient) DeleteRepo(id string) error {
+func (s *SatisClient) DeleteRepo(id string, generate bool) error {
 	var toDelete api.Repo
 
 	repos, err := s.FindAllRepos()
@@ -80,15 +87,21 @@ func (s *SatisClient) DeleteRepo(id string) error {
 
 	if found {
 		j := job.NewDeleteRepoJob(s.DbPath, toDelete.Url, true)
-		err = s.performJob(j)
+		if err = s.performJob(j); err != nil {
 
-		switch err {
-		case job.ErrRepoNotFound:
-			return ErrRepoNotFound
-		default:
-			return err
+			switch err {
+			case job.ErrRepoNotFound:
+				return ErrRepoNotFound
+			default:
+				return err
+			}
 		}
 
+		if generate {
+			return s.GenerateSatisWeb()
+		} else {
+			return nil
+		}
 	} else {
 		return ErrRepoNotFound
 	}

@@ -24,17 +24,16 @@ func (s *SatisJobProcessor) ProcessUpdates() {
 	for {
 		j := <-s.Jobs
 		err := j.Run()
-		if err == nil && j.Generate() {
+
+		switch j.(type) {
+		// Generate Static Web
+		case *job.GenerateJob:
 			dbMgr := db.SatisDbManager{Path: s.DbPath}
 
 			if err = dbMgr.Load(); err == nil {
 				genCh <- &dbMgr
 			}
-
-		}
-
 		// Exit the generation goroutine
-		switch j.(type) {
 		case *job.ExitJob:
 			genCh <- nil
 			<-genExit
