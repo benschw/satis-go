@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"log"
+	"os"
 	"reflect"
 	"testing"
 )
@@ -11,8 +12,14 @@ var _ = fmt.Print
 var _ = log.Print
 
 func ARandomDbMgr() SatisDbManager {
-	testPath := "../../../test-db.json"
-	mgr := SatisDbManager{Path: testPath}
+	dbPath := "/tmp/satis-test-data"
+
+	// Make Data Dir
+	if err := os.MkdirAll(dbPath, 0744); err != nil {
+		log.Fatalf("Unable to create path: %v", err)
+	}
+
+	mgr := SatisDbManager{Path: dbPath}
 	mgr.Db.Name = "My Repo"
 	mgr.Db.Homepage = "http://repo.com"
 	mgr.Db.RequireAll = true
@@ -20,7 +27,7 @@ func ARandomDbMgr() SatisDbManager {
 		SatisRepository{Type: "vcs", Url: "http://package.com"},
 	}
 
-	mgr.Path = testPath
+	mgr.Path = dbPath
 	mgr.Write()
 
 	return mgr

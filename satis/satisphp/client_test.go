@@ -6,6 +6,7 @@ import (
 	"github.com/benschw/satis-go/satis/satisphp/db"
 	"github.com/benschw/satis-go/satis/satisphp/job"
 	"log"
+	"os"
 	"reflect"
 	"testing"
 	"time"
@@ -27,9 +28,14 @@ func (s *StubGenerator) Generate() error {
 var gen *StubGenerator
 
 func ARandomClient() *SatisClient {
-	path := "../../test-db.json"
+	dbPath := "/tmp/satis-test-data"
 
-	dbMgr := &db.SatisDbManager{Path: path}
+	// Make Data Dir
+	if err := os.MkdirAll(dbPath, 0744); err != nil {
+		log.Fatalf("Unable to create path: %v", err)
+	}
+
+	dbMgr := &db.SatisDbManager{Path: dbPath}
 	dbMgr.Write() // empty
 
 	jobs := make(chan job.SatisJob)
@@ -38,13 +44,14 @@ func ARandomClient() *SatisClient {
 	gen = &StubGenerator{}
 
 	jobProcessor := SatisJobProcessor{
+		DbPath:    dbPath,
 		Jobs:      jobs,
 		Generator: gen,
 	}
 
 	// Client to Job Processor
 	satisClient := &SatisClient{
-		DbPath: path,
+		DbPath: dbPath,
 		Jobs:   jobs,
 	}
 

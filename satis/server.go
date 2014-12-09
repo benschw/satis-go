@@ -40,6 +40,7 @@ func (s *Server) Run() error {
 	}
 
 	s.jobProcessor = satisphp.SatisJobProcessor{
+		DbPath:    s.DbPath,
 		Jobs:      jobs,
 		Generator: gen,
 	}

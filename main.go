@@ -12,9 +12,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	dbPath := dir + "/data"
 
+	// Make Data Dir
+	if err := os.MkdirAll(dbPath, 0744); err != nil {
+		log.Fatalf("Unable to create path: %v", err)
+	}
+
+	// Configure Server
 	s := &satis.Server{
-		DbPath:    dir + "/db.json",
+		DbPath:    dbPath,
 		WebPath:   dir + "/web/",
 		SatisPath: dir + "/lib/satis/",
 		Bind:      ":8080",

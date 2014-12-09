@@ -5,6 +5,11 @@ import (
 	"io/ioutil"
 )
 
+const (
+	DbFile      = "/db.json"
+	StagingFile = "/stage.json"
+)
+
 type SatisDbManager struct {
 	Path string
 	Db   SatisDb
@@ -12,7 +17,7 @@ type SatisDbManager struct {
 
 func (c *SatisDbManager) Load() error {
 
-	content, err := ioutil.ReadFile(c.Path)
+	content, err := ioutil.ReadFile(c.Path + DbFile)
 	if err != nil {
 		return err
 	}
@@ -24,12 +29,19 @@ func (c *SatisDbManager) Load() error {
 }
 
 func (c *SatisDbManager) Write() error {
+	return c.doWrite(c.Path + DbFile)
+}
+func (c *SatisDbManager) WriteStaging() error {
+	return c.doWrite(c.Path + StagingFile)
+}
+
+func (c *SatisDbManager) doWrite(path string) error {
 	b, err := json.MarshalIndent(c.Db, "", "    ") // pretty print
 	if err != nil {
 		return err
 	}
 
-	if err = ioutil.WriteFile(c.Path, b, 0644); err != nil {
+	if err = ioutil.WriteFile(c.Path+DbFile, b, 0644); err != nil {
 		return err
 	}
 	return nil

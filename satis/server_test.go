@@ -8,6 +8,7 @@ import (
 	. "gopkg.in/check.v1"
 	"log"
 	"net"
+	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -186,9 +187,15 @@ func (s *StubGenerator) Generate() error {
 
 func ARandomServer() *Server {
 	host := fmt.Sprintf("localhost:%d", GetRandomPort())
+	dbPath := "/tmp/satis-test-data"
+
+	// Make Data Dir
+	if err := os.MkdirAll(dbPath, 0744); err != nil {
+		log.Fatalf("Unable to create path: %v", err)
+	}
 
 	s := &Server{
-		DbPath:    "../test-db.json",
+		DbPath:    dbPath,
 		WebPath:   "../test-web/",
 		SatisPath: "../lib/satis/",
 		Bind:      host,

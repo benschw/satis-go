@@ -1,6 +1,7 @@
 package satisphp
 
 import (
+	"github.com/benschw/satis-go/satis/satisphp/db"
 	"log"
 	"os/exec"
 )
@@ -19,7 +20,7 @@ type StaticWebGenerator struct {
 
 func (s *StaticWebGenerator) Generate() error {
 	_, err := exec.
-		Command(s.SatisPath+"bin/satis", "build", "--no-interaction", s.DbPath, s.WebPath).
+		Command(s.SatisPath+"bin/satis", "build", "--no-interaction", s.DbPath+db.StagingFile, s.WebPath).
 		Output()
 
 	return err
