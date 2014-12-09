@@ -19,8 +19,9 @@ type StaticWebGenerator struct {
 }
 
 func (s *StaticWebGenerator) Generate() error {
+	log.Print("Generating...")
 	_, err := exec.
-		Command(s.SatisPath+"/bin/satis", "build", "--no-interaction", s.DbPath+db.StagingFile, s.WebPath).
+		Command(s.SatisPath+"/bin/satis", "build", s.DbPath+db.StagingFile, s.WebPath).
 		Output()
 
 	return err

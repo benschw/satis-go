@@ -1,0 +1,6 @@
+bind: localhost:8080
+dbpath: /home/ben/go/src/github.com/benschw/satis-go/data
+satispath: /home/ben/go/src/github.com/benschw/satis-go/lib/satis
+webpath: /home/ben/go/src/github.com/benschw/satis-go/repo-ui
+reponame: My Repository
+repohost: http://localhost:8080

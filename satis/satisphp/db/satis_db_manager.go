@@ -3,7 +3,10 @@ package db
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 )
+
+var _ = log.Print
 
 const (
 	DbFile      = "/db.json"
@@ -41,7 +44,7 @@ func (c *SatisDbManager) doWrite(path string) error {
 		return err
 	}
 
-	if err = ioutil.WriteFile(c.Path+DbFile, b, 0644); err != nil {
+	if err = ioutil.WriteFile(path, b, 0644); err != nil {
 		return err
 	}
 	return nil

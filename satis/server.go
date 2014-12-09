@@ -68,7 +68,11 @@ func (s *Server) Run() error {
 	r.HandleFunc("/api/generate-web-job", resource.generateStaticWeb).Methods("POST")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir(s.WebPath)))
 
+	//	r.Handle("/dist/{rest}", http.StripPrefix("/dist/", http.FileServer(http.Dir("./dist/"))))
+	// r.PathPrefix("/dist/").Handler(http.StripPrefix("/dist/", http.FileServer(http.Dir("./dist"))))
+
 	http.Handle("/", r)
+	http.Handle("/admin/", http.StripPrefix("/admin/", http.FileServer(http.Dir("./admin-ui/"))))
 
 	// Start update processor
 	go s.jobProcessor.ProcessUpdates()
@@ -82,7 +86,7 @@ func (s *Server) initDb() error {
 	dbMgr := &db.SatisDbManager{Path: s.DbPath}
 
 	// create empty db if it doesn't exist
-	if _, err := os.Stat(s.DbPath); os.IsNotExist(err) {
+	if _, err := os.Stat(s.DbPath + db.DbFile); os.IsNotExist(err) {
 		if err := dbMgr.Write(); err != nil {
 			return err
 		}

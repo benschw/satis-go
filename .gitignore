@@ -1,7 +1,10 @@
 satis-go
+
 composer.phar
 lib
-web
-test-web
-db.json
-test-db.json
+
+data
+test-data
+
+admin-ui
+repo-ui

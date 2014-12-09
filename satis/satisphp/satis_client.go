@@ -88,7 +88,6 @@ func (s *SatisClient) DeleteRepo(id string, generate bool) error {
 	if found {
 		j := job.NewDeleteRepoJob(s.DbPath, toDelete.Url, true)
 		if err = s.performJob(j); err != nil {
-
 			switch err {
 			case job.ErrRepoNotFound:
 				return ErrRepoNotFound
