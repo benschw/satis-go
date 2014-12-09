@@ -12,12 +12,13 @@ import (
 )
 
 type Config struct {
-	Dbpath    string
-	Bind      string
-	Satispath string
-	Webpath   string
-	Reponame  string
-	Repohost  string
+	Dbpath      string
+	Bind        string
+	Satispath   string
+	RepoUiPath  string
+	AdminUiPath string
+	Reponame    string
+	Repohost    string
 }
 
 func getConfig(path string) (Config, error) {
@@ -71,12 +72,13 @@ func main() {
 	case "serve":
 		// Configure Server
 		s := &satis.Server{
-			DbPath:    cfg.Dbpath,
-			WebPath:   cfg.Webpath,
-			SatisPath: cfg.Satispath,
-			Bind:      cfg.Bind,
-			Name:      cfg.Reponame,
-			Homepage:  cfg.Repohost,
+			DbPath:      cfg.Dbpath,
+			AdminUiPath: cfg.AdminUiPath,
+			WebPath:     cfg.RepoUiPath,
+			SatisPath:   cfg.Satispath,
+			Bind:        cfg.Bind,
+			Name:        cfg.Reponame,
+			Homepage:    cfg.Repohost,
 		}
 
 		// Start Server

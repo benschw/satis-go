@@ -14,6 +14,7 @@ var _ = log.Printf
 
 type Server struct {
 	DbPath       string
+	AdminUiPath  string
 	WebPath      string
 	SatisPath    string
 	Bind         string
@@ -72,7 +73,7 @@ func (s *Server) Run() error {
 	// r.PathPrefix("/dist/").Handler(http.StripPrefix("/dist/", http.FileServer(http.Dir("./dist"))))
 
 	http.Handle("/", r)
-	http.Handle("/admin/", http.StripPrefix("/admin/", http.FileServer(http.Dir("./admin-ui/"))))
+	http.Handle("/admin/", http.StripPrefix("/admin/", http.FileServer(http.Dir(s.AdminUiPath))))
 
 	// Start update processor
 	go s.jobProcessor.ProcessUpdates()

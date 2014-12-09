@@ -1,6 +1,7 @@
 bind: localhost:8080
 dbpath: /opt/satis/data
 satispath: /opt/satis/satis
-webpath: /opt/satis/repo-ui
+repouipath: /opt/satis/repo-ui
+adminuipath: /opt/satis/admin-ui
 reponame: My Repository
 repohost: http://localhost:8080
