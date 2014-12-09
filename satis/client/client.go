@@ -23,8 +23,31 @@ func (c *SatisClient) AddRepo(repo *api.Repo) (*api.Repo, error) {
 	err = processResponseEntity(req, &r, http.StatusCreated)
 	return r, err
 }
+func (c *SatisClient) SaveRepo(repo *api.Repo) (*api.Repo, error) {
+	r := &api.Repo{}
+	url := c.Host + "/api/repo/" + repo.Id
 
-func (c *SatisClient) FindAll() ([]api.Repo, error) {
+	req, err := makeRequest("PUT", url, repo)
+	if err != nil {
+		return r, err
+	}
+	err = processResponseEntity(req, &r, http.StatusOK)
+	return r, err
+}
+
+func (c *SatisClient) FindRepo(id string) (*api.Repo, error) {
+	var repo api.Repo
+	url := c.Host + "/api/repo/" + id
+
+	req, err := makeRequest("GET", url, nil)
+	if err != nil {
+		return &repo, err
+	}
+	err = processResponseEntity(req, &repo, http.StatusOK)
+	return &repo, err
+}
+
+func (c *SatisClient) FindAllRepos() ([]api.Repo, error) {
 	var repos []api.Repo
 	url := c.Host + "/api/repo"
 
@@ -46,7 +69,7 @@ func (c *SatisClient) DeleteRepo(id string) error {
 	return processResponseEntity(req, nil, http.StatusNoContent)
 }
 
-func (c *SatisClient) Generate() error {
+func (c *SatisClient) GenerateStaticWeb() error {
 	url := c.Host + "/api/generate-web-job"
 
 	req, err := makeRequest("POST", url, nil)

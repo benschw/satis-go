@@ -39,20 +39,6 @@ func (s *MySuite) SetUpTest(c *C) {
 	dbMgr.Write()
 }
 
-func (s *MySuite) TestFindAll(c *C) {
-	// given
-	client := &client.SatisClient{Host: s.s.Homepage}
-	repo := api.NewRepo("vcs", "http://foo.bar")
-	created, _ := client.AddRepo(repo)
-
-	// when
-	found, err := client.FindAll()
-
-	// then
-	c.Assert(err, Equals, nil)
-
-	c.Assert([]api.Repo{*created}, DeepEquals, found)
-}
 func (s *MySuite) TestAddRepo(c *C) {
 	// given
 	client := &client.SatisClient{Host: s.s.Homepage}
@@ -64,8 +50,87 @@ func (s *MySuite) TestAddRepo(c *C) {
 	// then
 	c.Assert(err, Equals, nil)
 
-	found, _ := client.FindAll()
+	found, _ := client.FindAllRepos()
 	c.Assert([]api.Repo{*created}, DeepEquals, found)
+}
+
+func (s *MySuite) TestAddRepoWithConflict(c *C) {
+	// given
+	client := &client.SatisClient{Host: s.s.Homepage}
+	repo := api.NewRepo("vcs", "http://foo.bar")
+	client.AddRepo(repo)
+
+	// when
+	_, err := client.AddRepo(repo)
+
+	// then
+	c.Assert(err, Not(Equals), nil) // Conflict error
+
+	found, _ := client.FindAllRepos()
+	c.Assert(len(found), Equals, 1)
+}
+
+func (s *MySuite) TestSaveRepo(c *C) {
+	// given
+	client := &client.SatisClient{Host: s.s.Homepage}
+	r := api.NewRepo("vcs", "http://foo.bar")
+	repo, err := client.AddRepo(r)
+
+	// when
+	repo.Type = "composer"
+	saved, err := client.SaveRepo(repo)
+
+	// then
+	c.Assert(err, Equals, nil)
+
+	found, _ := client.FindRepo(repo.Id)
+	c.Assert(saved, DeepEquals, found)
+}
+func (s *MySuite) TestSaveRepoNotFound(c *C) {
+	// given
+	client := &client.SatisClient{Host: s.s.Homepage}
+	repo := api.NewRepo("vcs", "http://foo.bar")
+
+	// when
+	_, err := client.SaveRepo(repo)
+
+	// then
+	c.Assert(err, Not(Equals), nil) // NotFound error
+
+	found, _ := client.FindAllRepos()
+	c.Assert(len(found), Equals, 0)
+}
+
+func (s *MySuite) TestFindRepo(c *C) {
+	// given
+	client := &client.SatisClient{Host: s.s.Homepage}
+	repo := api.NewRepo("vcs", "http://foo.bar")
+	created, _ := client.AddRepo(repo)
+
+	// when
+	found, err := client.FindRepo(created.Id)
+
+	// then
+	c.Assert(err, Equals, nil)
+
+	c.Assert(created, DeepEquals, found)
+}
+
+func (s *MySuite) TestFindAllRepos(c *C) {
+	// given
+	client := &client.SatisClient{Host: s.s.Homepage}
+	repo1 := api.NewRepo("vcs", "http://foo.bar")
+	repo2 := api.NewRepo("vcs", "http://baz.boo")
+	client.AddRepo(repo1)
+	client.AddRepo(repo2)
+
+	// when
+	found, err := client.FindAllRepos()
+
+	// then
+	c.Assert(err, Equals, nil)
+
+	c.Assert([]api.Repo{*repo1, *repo2}, DeepEquals, found)
 }
 
 func (s *MySuite) TestDeleteRepo(c *C) {
@@ -80,16 +145,28 @@ func (s *MySuite) TestDeleteRepo(c *C) {
 	// then
 	c.Assert(err, Equals, nil)
 
-	found, _ := client.FindAll()
+	found, _ := client.FindAllRepos()
 	c.Assert([]api.Repo{}, DeepEquals, found)
 }
 
-func (s *MySuite) TestGenerate(c *C) {
+func (s *MySuite) TestDeleteRepoNotFound(c *C) {
+	// given
+	client := &client.SatisClient{Host: s.s.Homepage}
+	repo := api.NewRepo("vcs", "http://foo.bar")
+
+	// when
+	err := client.DeleteRepo(repo.Id)
+
+	// then
+	c.Assert(err, Not(Equals), nil) // NotFound error
+}
+
+func (s *MySuite) TestGenerateWeb(c *C) {
 	// given
 	client := &client.SatisClient{Host: s.s.Homepage}
 
 	// when
-	err := client.Generate()
+	err := client.GenerateStaticWeb()
 
 	// then
 	c.Assert(err, Equals, nil)

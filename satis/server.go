@@ -52,16 +52,19 @@ func (s *Server) Run() error {
 
 	// route handlers
 	resource := &SatisResource{
+		Host:           s.Homepage,
 		SatisPhpClient: jobClient,
 	}
 
 	// Configure Routes
 	r := mux.NewRouter()
 
-	r.HandleFunc("/api/generate-web-job", resource.generateStaticWeb).Methods("POST")
-	r.HandleFunc("/api/repo", resource.saveRepo).Methods("POST")
+	r.HandleFunc("/api/repo", resource.addRepo).Methods("POST")
+	r.HandleFunc("/api/repo/{id}", resource.saveRepo).Methods("PUT")
+	r.HandleFunc("/api/repo/{id}", resource.findRepo).Methods("GET")
 	r.HandleFunc("/api/repo", resource.findAllRepos).Methods("GET")
 	r.HandleFunc("/api/repo/{id}", resource.deleteRepo).Methods("DELETE")
+	r.HandleFunc("/api/generate-web-job", resource.generateStaticWeb).Methods("POST")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir(s.WebPath)))
 
 	http.Handle("/", r)

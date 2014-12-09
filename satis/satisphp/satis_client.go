@@ -17,6 +17,27 @@ type SatisClient struct {
 	DbPath string
 }
 
+func (s *SatisClient) FindRepo(id string) (api.Repo, error) {
+	var repo api.Repo
+
+	repos, err := s.FindAllRepos()
+	if err != nil {
+		return repo, err
+	}
+
+	found := false
+	for _, r := range repos {
+		if r.Id == id {
+			found = true
+			repo = r
+		}
+	}
+	if found {
+		return repo, nil
+	} else {
+		return repo, ErrRepoNotFound
+	}
+}
 func (s *SatisClient) FindAllRepos() ([]api.Repo, error) {
 	j := job.NewFindAllJob(s.DbPath)
 
