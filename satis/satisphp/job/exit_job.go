@@ -11,9 +11,6 @@ type ExitJob struct {
 	exitChan chan error
 }
 
-func (j ExitJob) Generate() bool {
-	return false
-}
 func (j ExitJob) ExitChan() chan error {
 	return j.exitChan
 }

@@ -11,9 +11,6 @@ type GenerateJob struct {
 	exitChan chan error
 }
 
-func (j GenerateJob) Generate() bool {
-	return true
-}
 func (j GenerateJob) ExitChan() chan error {
 	return j.exitChan
 }

@@ -57,7 +57,7 @@ func (s *SatisClient) SaveRepo(repo *api.Repo, generate bool) error {
 	// 	Type: repo.Type,
 	// 	Url:  repo.Url,
 	// }
-	j := job.NewSaveRepoJob(s.DbPath, *repo, true)
+	j := job.NewSaveRepoJob(s.DbPath, *repo)
 	if err := s.performJob(j); err != nil {
 		return err
 	}
@@ -85,7 +85,7 @@ func (s *SatisClient) DeleteRepo(id string, generate bool) error {
 	}
 
 	if found {
-		j := job.NewDeleteRepoJob(s.DbPath, toDelete.Url, true)
+		j := job.NewDeleteRepoJob(s.DbPath, toDelete.Url)
 		if err = s.performJob(j); err != nil {
 			switch err {
 			case job.ErrRepoNotFound:

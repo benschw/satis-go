@@ -5,10 +5,9 @@ import (
 )
 
 // Remove a repo from the repo collection
-func NewDeleteRepoJob(dbPath string, repo string, gen bool) *DeleteRepoJob {
+func NewDeleteRepoJob(dbPath string, repo string) *DeleteRepoJob {
 	return &DeleteRepoJob{
 		dbPath:     dbPath,
-		generate:   gen,
 		repository: repo,
 		exitChan:   make(chan error, 1),
 	}
@@ -17,13 +16,9 @@ func NewDeleteRepoJob(dbPath string, repo string, gen bool) *DeleteRepoJob {
 type DeleteRepoJob struct {
 	dbPath     string
 	repository string
-	generate   bool
 	exitChan   chan error
 }
 
-func (j DeleteRepoJob) Generate() bool {
-	return j.generate
-}
 func (j DeleteRepoJob) ExitChan() chan error {
 	return j.exitChan
 }

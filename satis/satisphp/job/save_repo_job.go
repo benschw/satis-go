@@ -6,10 +6,9 @@ import (
 )
 
 // Add or save a repo tp the repo collection
-func NewSaveRepoJob(dbPath string, repo api.Repo, gen bool) *SaveRepoJob {
+func NewSaveRepoJob(dbPath string, repo api.Repo) *SaveRepoJob {
 	return &SaveRepoJob{
 		dbPath:     dbPath,
-		generate:   gen,
 		repository: repo,
 		exitChan:   make(chan error, 1),
 	}
@@ -18,13 +17,9 @@ func NewSaveRepoJob(dbPath string, repo api.Repo, gen bool) *SaveRepoJob {
 type SaveRepoJob struct {
 	dbPath     string
 	repository api.Repo
-	generate   bool
 	exitChan   chan error
 }
 
-func (j SaveRepoJob) Generate() bool {
-	return j.generate
-}
 func (j SaveRepoJob) ExitChan() chan error {
 	return j.exitChan
 }

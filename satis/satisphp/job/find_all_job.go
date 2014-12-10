@@ -16,13 +16,9 @@ func NewFindAllJob(dbPath string) *FindAllJob {
 type FindAllJob struct {
 	ReposResp chan []db.SatisRepository
 	dbPath    string
-	generate  bool
 	exitChan  chan error
 }
 
-func (j FindAllJob) Generate() bool {
-	return j.generate
-}
 func (j FindAllJob) ExitChan() chan error {
 	return j.exitChan
 }
