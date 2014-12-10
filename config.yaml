@@ -3,5 +3,5 @@ dbpath: /opt/satis/data
 satispath: /opt/satis/satis
 repouipath: /opt/satis/repo-ui
 adminuipath: /opt/satis/admin-ui
-reponame: My Repository
+reponame: My Satis-go
 repohost: http://localhost:8080
