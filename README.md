@@ -61,7 +61,7 @@ Use the REST api to refresh your repository:
 
 ## Hacking
 
-install satis to your path like above
+install satis to your path like above (or use the supplied `make` target)
 
 	make satis-install
 
