@@ -1,10 +1,11 @@
 default: build
 
 clean:
-	rm -rf web
-	rm -rf satisapi-go
-	rm -rf test-config.json
-	rm -rf satis
+	rm -rf repo-ui
+	rm -rf admin-ui
+	rm -rf satis-go
+	rm -rf data
+	rm -rf lib
 	rm -rf conposer.phar
 
 deps:
@@ -15,4 +16,10 @@ satis:
 	curl -sS https://getcomposer.org/installer | php
 	php ./composer.phar create-project composer/satis lib/satis --stability=dev --keep-vcs
 
-.PHONY: satis
+admin-ui:
+	wget -qO- -O tmp.zip https://drone.io/github.com/benschw/satis-admin/files/admin-ui.zip
+	unzip tmp.zip
+	rm tmp.zip
+
+
+.PHONY: satis admin-ui
