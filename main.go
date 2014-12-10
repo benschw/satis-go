@@ -44,18 +44,11 @@ func main() {
 	flag.StringVar(&cfgPath, "config", "/opt/satis/config.yaml", "Path to Config File")
 
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: %s [arguments] <command> \n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Usage: %s [arguments] \n", os.Args[0])
 		flag.PrintDefaults()
 	}
 
 	flag.Parse()
-
-	// Get Command/Operation
-	if flag.NArg() == 0 {
-		flag.Usage()
-		log.Fatal("Command argument required")
-	}
-	cmd := flag.Arg(0)
 
 	// Load Config
 	cfg, err := getConfig(cfgPath)
@@ -68,27 +61,20 @@ func main() {
 		log.Fatalf("Unable to create path: %v", err)
 	}
 
-	switch cmd {
-	case "serve":
-		// Configure Server
-		s := &satis.Server{
-			DbPath:      cfg.Dbpath,
-			AdminUiPath: cfg.AdminUiPath,
-			WebPath:     cfg.RepoUiPath,
-			SatisPath:   cfg.Satispath,
-			Bind:        cfg.Bind,
-			Name:        cfg.Reponame,
-			Homepage:    cfg.Repohost,
-		}
+	// Configure Server
+	s := &satis.Server{
+		DbPath:      cfg.Dbpath,
+		AdminUiPath: cfg.AdminUiPath,
+		WebPath:     cfg.RepoUiPath,
+		SatisPath:   cfg.Satispath,
+		Bind:        cfg.Bind,
+		Name:        cfg.Reponame,
+		Homepage:    cfg.Repohost,
+	}
 
-		// Start Server
-		if err := s.Run(); err != nil {
-			log.Fatal(err)
-		}
-	default:
-		log.Fatalf("Unknown Command: %s", cmd)
-		fmt.Fprintf(os.Stderr, "Usage: %s [arguments] <command> \n", os.Args[0])
-		flag.Usage()
+	// Start Server
+	if err := s.Run(); err != nil {
+		log.Fatal(err)
 	}
 
 }

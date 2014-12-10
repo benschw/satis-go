@@ -20,11 +20,15 @@
 
 	# Get/Install satis-go server
 	wget -qO- -O /opt/satis/satis-go https://drone.io/github.com/benschw/satis-go/files/satis-go 
+	chmod +x /opt/satis/satis-go
 	wget -qO- -O /opt/satis/config.yaml https://drone.io/github.com/benschw/satis-go/files/config.yaml
 
 	# Get/Install ui for satis-go server
 	wget -qO- -O tmp.zip https://drone.io/github.com/benschw/satis-admin/files/admin-ui.zip
 	unzip tmp.zip -d /opt/satis/
+
+	# Cleanup
+	rm ./composer.phar
 	rm tmp.zip
 
 
