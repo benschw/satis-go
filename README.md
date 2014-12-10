@@ -3,17 +3,17 @@
 
 
 # Satis-go
+[download latest](https://drone.io/github.com/benschw/satis-go/files/satis-go)
 
 Satis-go is a web server for hosting and managing your [Satis Repository](https://github.com/composer/satis) for [Composer Packages](https://getcomposer.org/)
 
 Some Highlights:
 * Satis-go provides a simple user interface for managing the repositories you want to track in your Composer package repo
-* Repo generation is delegated to [Satis](https://github.com/composer/satis) so your package repository will stay up to date with composer
+* Repo generation is delegated to [Satis](https://github.com/composer/satis) so your package repository will stay up to date with composer specs
 * No database required: the satis config file is managed directly while still managing writes and reads safely
 * RESTful API so you and integrate this into your CI
 
 
-[download latest](https://drone.io/github.com/benschw/satis-go/files/satis-go)
 
 
 ## Install
@@ -65,7 +65,7 @@ install satis to your path like above (or use the supplied `make` target)
 
 	make satis-install
 
-get a copy of the admin ui, you can store this in your checkout of satis-go
+get a copy of the admin ui; you can store this in your checkout of satis-go
 
 	make admin-ui
 
