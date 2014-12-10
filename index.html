@@ -48,6 +48,19 @@
         </div>
       </div>
       <div class="panel panel-default">
+        <div class="panel-heading">Roadmap</div>
+        <div class="panel-body">
+          <ul>
+            <li>
+              Cross compile so it will work on more than just linux-amd64
+            </li>
+            <li>
+              Add support for managing which versions to track via. the "require" config option (currently you are forced to "require-all")
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel panel-default">
         <div class="panel-heading">Getting Started</div>
         <div class="panel-body">
           <ul class="list-group">
@@ -83,10 +96,15 @@
 
           <p>Start the server</p>
           <pre>    
-    /opt/satis-go/satis-go
+    /opt/satis-go/satis-go -config /opt/satis-go/config.yaml
 
           </pre>
-
+          <p>
+            Now you can navigate to <a href="http://localhost:8080/admin">http://localhost:8080/admin</a> and start adding repos!
+          </p>
+          <p>
+            If you want to be able to use this on something other than "localhost", update /opt/satis-go/config.yaml to "bind" on something like "0.0.0.0:8080" and "repohost" to be whatever name you are pointing at this server.
+          </p>
         </div>
       </div>
 

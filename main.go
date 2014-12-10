@@ -40,7 +40,7 @@ func main() {
 	// Get Arguments
 	var cfgPath string
 
-	flag.StringVar(&cfgPath, "config", "/opt/satis/config.yaml", "Path to Config File")
+	flag.StringVar(&cfgPath, "config", "/opt/satis-go/config.yaml", "Path to Config File")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [arguments] \n", os.Args[0])
