@@ -2,8 +2,14 @@
 [![GoDoc](http://godoc.org/github.com/benschw/satis-go?status.png)](http://godoc.org/github.com/benschw/satis-go)
 
 
-# satis-go
+# Satis-go
 
+Satis-go is a web server for hosting and managing your [Satis Repository](https://github.com/composer/satis) for [Composer Packages](https://getcomposer.org/)
+
+Some Highlights:
+* Satis-go provides a simple user interface for managing the repositories you want to track in your Composer package repo
+* Repo generation is delegated to [Satis](https://github.com/composer/satis) so your package repository will stay up to date with composer
+* No database required: the satis config file is managed directly while still managing writes and reads safely
 
 [download latest](https://drone.io/github.com/benschw/satis-go/files/satis-go)
 
@@ -32,3 +38,12 @@
 	rm tmp.zip
 
 
+## Usage
+
+### Start the server
+
+	/opt/satis/satis-go
+
+### Manage your satis repo
+
+Just navigate your browser to (http://localhost:8080/admin) and start adding repos. They will automatically populate in your custom repo: (http://localhost:8080)
