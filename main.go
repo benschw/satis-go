@@ -14,7 +14,6 @@ import (
 type Config struct {
 	Dbpath      string
 	Bind        string
-	Satispath   string
 	RepoUiPath  string
 	AdminUiPath string
 	Reponame    string
@@ -66,7 +65,6 @@ func main() {
 		DbPath:      cfg.Dbpath,
 		AdminUiPath: cfg.AdminUiPath,
 		WebPath:     cfg.RepoUiPath,
-		SatisPath:   cfg.Satispath,
 		Bind:        cfg.Bind,
 		Name:        cfg.Reponame,
 		Homepage:    cfg.Repohost,

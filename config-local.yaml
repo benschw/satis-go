@@ -1,6 +1,5 @@
 bind: localhost:8080
 dbpath: ./data
-satispath: ./lib/satis
 repouipath: ./repo-ui
 adminuipath: ./admin-ui
 reponame: My Repository

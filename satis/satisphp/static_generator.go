@@ -13,15 +13,14 @@ type Generator interface {
 }
 
 type StaticWebGenerator struct {
-	DbPath    string
-	SatisPath string
-	WebPath   string
+	DbPath  string
+	WebPath string
 }
 
 func (s *StaticWebGenerator) Generate() error {
 	log.Print("Generating...")
 	_, err := exec.
-		Command(s.SatisPath+"/bin/satis", "build", s.DbPath+db.StagingFile, s.WebPath).
+		Command("satis", "--no-interaction", "build", s.DbPath+db.StagingFile, s.WebPath).
 		Output()
 
 	return err

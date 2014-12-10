@@ -16,7 +16,6 @@ type Server struct {
 	DbPath       string
 	AdminUiPath  string
 	WebPath      string
-	SatisPath    string
 	Bind         string
 	Name         string
 	Homepage     string
@@ -35,9 +34,8 @@ func (s *Server) Run() error {
 
 	// Job Processor responsible for interacting with db & static web docs
 	gen := &satisphp.StaticWebGenerator{
-		DbPath:    s.DbPath,
-		SatisPath: s.SatisPath,
-		WebPath:   s.WebPath,
+		DbPath:  s.DbPath,
+		WebPath: s.WebPath,
 	}
 
 	s.jobProcessor = satisphp.SatisJobProcessor{

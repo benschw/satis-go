@@ -18,22 +18,23 @@ Some Highlights:
 
 ## Install
 	
-	# Setup install dir
-	mkdir /opt/satis
-
-	# Get/Install Satis binary
+	# Get Composer/Satis and install in path
 	apt-get install -y php5-cli
 	curl -sS https://getcomposer.org/installer | php
-	php ./composer.phar create-project composer/satis /opt/satis/satis --stability=dev --keep-vcs
+	php ./composer.phar create-project composer/satis /opt/satis --stability=dev --keep-vcs
+	ln -s /opt/satis/bin/satis /usr/local/bin/satis
+	
+	# Setup install dir
+	mkdir /opt/satis-go
 
 	# Get/Install satis-go server
-	wget -qO- -O /opt/satis/satis-go https://drone.io/github.com/benschw/satis-go/files/satis-go 
-	chmod +x /opt/satis/satis-go
-	wget -qO- -O /opt/satis/config.yaml https://drone.io/github.com/benschw/satis-go/files/config.yaml
+	wget -qO- -O /opt/satis-go/satis-go https://drone.io/github.com/benschw/satis-go/files/satis-go 
+	chmod +x /opt/satis-go/satis-go
+	wget -qO- -O /opt/satis-go/config.yaml https://drone.io/github.com/benschw/satis-go/files/config.yaml
 
 	# Get/Install ui for satis-go server
 	wget -qO- -O tmp.zip https://drone.io/github.com/benschw/satis-admin/files/admin-ui.zip
-	unzip tmp.zip -d /opt/satis/
+	unzip tmp.zip -d /opt/satis-go/
 
 	# Cleanup
 	rm ./composer.phar
@@ -44,7 +45,7 @@ Some Highlights:
 
 ### Start the server
 
-	/opt/satis/satis-go
+	/opt/satis-go/satis-go
 
 ### Manage your satis repo
 

@@ -1,7 +1,6 @@
 bind: localhost:8080
-dbpath: /opt/satis/data
-satispath: /opt/satis/satis
-repouipath: /opt/satis/repo-ui
-adminuipath: /opt/satis/admin-ui
+dbpath: /opt/satis-go/data
+repouipath: /opt/satis-go/repo-ui
+adminuipath: /opt/satis-go/admin-ui
 reponame: My Satis-go
 repohost: http://localhost:8080

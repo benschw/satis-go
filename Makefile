@@ -12,9 +12,11 @@ deps:
 	go get
 	go get gopkg.in/check.v1
 
-satis:
+satis-install:
 	curl -sS https://getcomposer.org/installer | php
-	php ./composer.phar create-project composer/satis lib/satis --stability=dev --keep-vcs
+	php ./composer.phar create-project composer/satis /opt/satis --stability=dev --keep-vcs
+	ln -s /opt/satis/bin/satis /usr/local/bin/satis
+	rm ./composer.phar
 
 admin-ui:
 	wget -qO- -O tmp.zip https://drone.io/github.com/benschw/satis-admin/files/admin-ui.zip
