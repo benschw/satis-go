@@ -17,6 +17,7 @@ Some Highlights:
 
 
 ## Install
+Here is how to install [Satis](https://github.com/composer/satis) to /opt/satis and `satis-go` to /opt/satis-go/
 	
 	# Get Composer/Satis and install in path
 	apt-get install -y php5-cli
@@ -51,10 +52,29 @@ Some Highlights:
 
 Just navigate your browser to (http://localhost:8080/admin) and start adding repos. They will automatically populate in your custom repo: (http://localhost:8080)
 
-### Set up a hook script
+### Set up a web-hook script to refresh your repo on commit/push
 
 Use the REST api to refresh your repository:
 
 	curl -X POST http://localhost:8080/api/generate-web-job
 
 
+## Hacking
+
+* install satis to your path like above
+
+	make satis-install
+
+* get a copy of the admin ui, you can store this in your checkout of satis-go
+
+	make admin-ui
+
+* get your go deps
+
+	make deps
+
+* start building
+
+	go test ./...
+	go build
+	./satis-go -config config-local.yaml
