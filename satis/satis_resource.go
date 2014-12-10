@@ -63,7 +63,8 @@ func (r *SatisResource) saveRepo(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if _, err := r.SatisPhpClient.FindRepo(repoId); err != nil {
+	existing, err := r.SatisPhpClient.FindRepo(repoId)
+	if err != nil {
 		switch err {
 		case satisphp.ErrRepoNotFound:
 			res.WriteHeader(http.StatusNotFound)
@@ -74,7 +75,10 @@ func (r *SatisResource) saveRepo(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	body, err := r.upsertRepo(repo)
+	existing.Type = repo.Type
+	existing.Url = repo.Url
+
+	body, err := r.upsertRepo(&existing)
 	if err != nil {
 		log.Print(err)
 		res.WriteHeader(http.StatusInternalServerError)

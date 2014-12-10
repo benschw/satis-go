@@ -3,7 +3,6 @@ package satisphp
 import (
 	"errors"
 	"github.com/benschw/satis-go/satis/satisphp/api"
-	"github.com/benschw/satis-go/satis/satisphp/db"
 	"github.com/benschw/satis-go/satis/satisphp/job"
 	"log"
 )
@@ -54,11 +53,11 @@ func (s *SatisClient) FindAllRepos() ([]api.Repo, error) {
 }
 
 func (s *SatisClient) SaveRepo(repo *api.Repo, generate bool) error {
-	repoEntity := db.SatisRepository{
-		Type: repo.Type,
-		Url:  repo.Url,
-	}
-	j := job.NewSaveRepoJob(s.DbPath, repoEntity, true)
+	// repoEntity := db.SatisRepository{
+	// 	Type: repo.Type,
+	// 	Url:  repo.Url,
+	// }
+	j := job.NewSaveRepoJob(s.DbPath, *repo, true)
 	if err := s.performJob(j); err != nil {
 		return err
 	}

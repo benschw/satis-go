@@ -1,11 +1,12 @@
 package job
 
 import (
+	"github.com/benschw/satis-go/satis/satisphp/api"
 	"github.com/benschw/satis-go/satis/satisphp/db"
 )
 
 // Add or save a repo tp the repo collection
-func NewSaveRepoJob(dbPath string, repo db.SatisRepository, gen bool) *SaveRepoJob {
+func NewSaveRepoJob(dbPath string, repo api.Repo, gen bool) *SaveRepoJob {
 	return &SaveRepoJob{
 		dbPath:     dbPath,
 		generate:   gen,
@@ -16,7 +17,7 @@ func NewSaveRepoJob(dbPath string, repo db.SatisRepository, gen bool) *SaveRepoJ
 
 type SaveRepoJob struct {
 	dbPath     string
-	repository db.SatisRepository
+	repository api.Repo
 	generate   bool
 	exitChan   chan error
 }
@@ -44,16 +45,18 @@ func (j SaveRepoJob) Run() error {
 	}
 	return nil
 }
-func (j SaveRepoJob) doSave(repo db.SatisRepository, repos []db.SatisRepository) ([]db.SatisRepository, error) {
+func (j SaveRepoJob) doSave(repo api.Repo, repos []db.SatisRepository) ([]db.SatisRepository, error) {
+	repoEntity := db.SatisRepository{Type: repo.Type, Url: repo.Url}
 	found := false
 	for i, r := range repos {
-		if r.Url == repo.Url {
-			repos[i] = repo
+		tmp := api.NewRepo(r.Type, r.Url)
+		if tmp.Id == repo.Id {
+			repos[i] = repoEntity
 			found = true
 		}
 	}
 	if !found {
-		return append(repos, repo), nil
+		return append(repos, repoEntity), nil
 	}
 
 	return repos, nil
