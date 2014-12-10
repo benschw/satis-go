@@ -61,19 +61,19 @@ Use the REST api to refresh your repository:
 
 ## Hacking
 
-* install satis to your path like above
+install satis to your path like above
 
 	make satis-install
 
-* get a copy of the admin ui, you can store this in your checkout of satis-go
+get a copy of the admin ui, you can store this in your checkout of satis-go
 
 	make admin-ui
 
-* get your go deps
+get your go deps
 
 	make deps
 
-* start building
+start building
 
 	go test ./...
 	go build
