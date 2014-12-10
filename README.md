@@ -10,6 +10,8 @@ Some Highlights:
 * Satis-go provides a simple user interface for managing the repositories you want to track in your Composer package repo
 * Repo generation is delegated to [Satis](https://github.com/composer/satis) so your package repository will stay up to date with composer
 * No database required: the satis config file is managed directly while still managing writes and reads safely
+* RESTful API so you and integrate this into your CI
+
 
 [download latest](https://drone.io/github.com/benschw/satis-go/files/satis-go)
 
@@ -47,3 +49,11 @@ Some Highlights:
 ### Manage your satis repo
 
 Just navigate your browser to (http://localhost:8080/admin) and start adding repos. They will automatically populate in your custom repo: (http://localhost:8080)
+
+### Set up a hook script
+
+Use the REST api to refresh your repository:
+
+	curl -X POST http://localhost:8080/api/generate-web-job
+
+
