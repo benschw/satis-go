@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Satis-go</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+    <!-- Bootstrap core CSS -->
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+ 
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.js"></script>
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+<a href="https://github.com/you"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"></a>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>satis-go</h1>
+        <p>
+          Satis-go is a web server for hosting and managing your <a href="https://github.com/composer/satis">Satis Repository</a> for <a href="https://getcomposer.org/">Composer Packages</a>
+        </p>
+
+
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">Features</div>
+        <div class="panel-body">
+          <ul>
+            <li>
+              Satis-go provides a simple user interface for managing the repositories you want to track in your Composer package repo
+            </li>
+            <li>
+              Repo generation is delegated to <a href="https://github.com/composer/satis">Satis</a> so your package repository will stay up to date with composer specs
+            </li>
+            <li>
+              No database required: the satis config file is managed directly while still managing writes and reads safely
+            </li>
+            <li>
+              In fact, satis is the only dependency: satis-go is written in go and only relys on having the `satis` build executable in your path. Download to /opt/satis-go/ and you're done installing.
+            </li>
+            <li>
+              RESTful API so you and integrate this into your CI
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Getting Started</div>
+        <div class="panel-body">
+          <ul class="list-group">
+            <li class="list-group-item">
+              <a class="btn btn-success" role="button" href="https://github.com/benschw/satis-go/releases/tag/0.1">satis-go 0.1 release</a> webserver
+            </li>
+            <li class="list-group-item">
+              <a class="btn btn-success" role="button" href="https://github.com/benschw/satis-admin/releases/tag/0.1">satis-admin 0.1 release</a> static web app for admin
+            </li>
+          </ul>
+
+          <p>Get Composer/Satis and install in path</p>
+          <pre>
+    apt-get install -y php5-cli
+    curl -sS https://getcomposer.org/installer | php
+    php ./composer.phar create-project composer/satis /opt/satis --stability=dev --keep-vcs
+    ln -s /opt/satis/bin/satis /usr/local/bin/satis
+          </pre>
+
+          <p>Install satis-go server &amp; config</p>
+          <pre>    
+    mkdir /opt/satis-go
+    wget -qO- -O /opt/satis-go/satis-go https://github.com/benschw/satis-go/releases/download/0.1/satis-go
+    chmod +x /opt/satis-go/satis-go
+    wget -qO- -O /opt/satis-go/config.yaml https://github.com/benschw/satis-go/releases/download/0.1/config.yaml
+          </pre>
+
+          <p>Install admin ui for satis-go server</p>
+          <pre>    
+    wget -qO- -O tmp.zip https://github.com/benschw/satis-admin/releases/download/0.1/admin-ui.zip
+    unzip tmp.zip -d /opt/satis-go/
+          </pre>
+
+          <p>Start the server</p>
+          <pre>    
+    /opt/satis-go/satis-go
+
+          </pre>
+
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  </body>
+</html>
