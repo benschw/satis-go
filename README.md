@@ -28,7 +28,7 @@ Here is how to install [Satis](https://github.com/composer/satis) to /opt/satis 
 	# Setup install dir
 	mkdir /opt/satis-go
 
-	# Get/Install satis-go server
+	# Get/Install satis-go server & config
 	wget -qO- -O /opt/satis-go/satis-go https://drone.io/github.com/benschw/satis-go/files/satis-go 
 	chmod +x /opt/satis-go/satis-go
 	wget -qO- -O /opt/satis-go/config.yaml https://drone.io/github.com/benschw/satis-go/files/config.yaml
