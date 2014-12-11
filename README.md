@@ -3,7 +3,7 @@
 
 
 # Satis-go
-[download latest](https://drone.io/github.com/benschw/satis-go/files/satis-go)
+[download latest](https://drone.io/github.com/benschw/satis-go/files)
 
 Satis-go is a web server for hosting and managing your [Satis Repository](https://github.com/composer/satis) for [Composer Packages](https://getcomposer.org/)
 
