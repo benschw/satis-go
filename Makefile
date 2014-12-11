@@ -19,9 +19,7 @@ satis-install:
 	rm ./composer.phar
 
 admin-ui:
-	wget -qO- -O tmp.zip https://drone.io/github.com/benschw/satis-admin/files/admin-ui.zip
-	unzip tmp.zip
-	rm tmp.zip
+	curl -sS https://drone.io/github.com/benschw/satis-admin/files/admin-ui.tar.gz | tar xzv
 
 
 .PHONY: satis admin-ui

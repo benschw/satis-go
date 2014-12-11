@@ -94,17 +94,19 @@
 
           <p>Install admin ui for satis-go server</p>
           <pre>    
-    wget -qO- -O tmp.zip https://github.com/benschw/satis-admin/releases/download/0.1/admin-ui.zip
-    unzip tmp.zip -d /opt/satis-go/
+    curl -sS https://drone.io/github.com/benschw/satis-admin/files/admin-ui.tar.gz | tar xzv -C /opt/satis-go/
           </pre>
 
           <p>Start the server</p>
           <pre>    
-    /opt/satis-go/satis-go -config /opt/satis-go/config.yaml
+    /opt/satis-go/satis-go
 
           </pre>
           <p>
             Now you can navigate to <a href="http://localhost:8080/admin">http://localhost:8080/admin</a> and start adding repos!
+          </p>
+          <p>
+            Use the REST api to create a source control web-hook which will refresh your repository: curl -X POST http://localhost:8080/api/generate-web-job
           </p>
           <p>
             If you want to be able to use this on something other than "localhost", update /opt/satis-go/config.yaml to "bind" on something like "0.0.0.0:8080" and "repohost" to be whatever name you are pointing at this server.
