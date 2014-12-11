@@ -24,7 +24,7 @@ admin-ui:
 	curl -sS https://drone.io/github.com/benschw/satis-admin/files/admin-ui.tar.gz | tar xzv
 
 
-release: deps golang-crosscompile golang-buildsetup
+dist: deps golang-crosscompile golang-buildsetup
 	source golang-crosscompile/crosscompile.bash; \
 	mkdir -p release; \
 	go-darwin-386 build -o satis-go; \
