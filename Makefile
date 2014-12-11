@@ -28,13 +28,15 @@ dist: deps golang-crosscompile golang-buildsetup
 	source golang-crosscompile/crosscompile.bash; \
 	mkdir -p release; \
 	go-darwin-386 build -o satis-go; \
-	gzip -c satis-go > release/satis-go-darwin-386.gz; \
+	gzip -c satis-go > release/satis-go-Darwin-i386.gz; \
+	gzip -c satis-go > release/satis-go-Darwin-i686.gz; \
 	go-darwin-amd64 build -o satis-go; \
-	gzip -c satis-go > release/satis-go-darwin-amd64.gz; \
+	gzip -c satis-go > release/satis-go-Darwin-x86_64.gz; \
 	go-linux-386 build -o satis-go; \
-	gzip -c satis-go > release/satis-go-linux-386.gz; \
+	gzip -c satis-go > release/satis-go-Linux-i386.gz; \
+	gzip -c satis-go > release/satis-go-Linux-i686.gz; \
 	go-linux-amd64 build -o satis-go; \
-	gzip -c satis-go > release/satis-go-linux-amd64.gz
+	gzip -c satis-go > release/satis-go-Linux-x86_64.gz
 
 golang-buildsetup: golang-crosscompile
 	source golang-crosscompile/crosscompile.bash; \
