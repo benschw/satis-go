@@ -87,14 +87,17 @@
           <p>Install satis-go server &amp; config</p>
           <pre>    
     mkdir /opt/satis-go
-    curl -sS /opt/satis-go/satis-go https://github.com/benschw/satis-go/releases/download/0.1.1/satis-go-`uname`-`uname -m`.gz | gunzip > /opt/satis-go/satis-go
+    curl -sS https://github.com/benschw/satis-go/releases/download/0.1.1/satis-go-`uname`-`uname -m`.gz | \
+        gunzip > /opt/satis-go/satis-go
     chmod +x /opt/satis-go/satis-go
-    curl -sS https://github.com/benschw/satis-go/releases/download/0.1.1/config.yaml > /opt/satis-go/config.yaml
+    curl -sS https://github.com/benschw/satis-go/releases/download/0.1.1/config.yaml > \
+        /opt/satis-go/config.yaml
           </pre>
 
           <p>Install admin ui for satis-go server</p>
           <pre>    
-    curl -sS https://github.com/benschw/satis-admin/releases/download/0.1.1/admin-ui.tar.gz | tar xzv -C /opt/satis-go/
+    curl -sS https://github.com/benschw/satis-admin/releases/download/0.1.1/admin-ui.tar.gz | \
+        tar xzv -C /opt/satis-go/
           </pre>
 
           <p>Start the server</p>
