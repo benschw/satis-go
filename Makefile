@@ -38,10 +38,10 @@ dist: deps golang-crosscompile golang-buildsetup
 
 golang-buildsetup: golang-crosscompile
 	source golang-crosscompile/crosscompile.bash; \
-	go-crosscompile-build darwin/386 \
-	go-crosscompile-build darwin/amd64 \
-	go-crosscompile-build linux/386 \
-	go-crosscompile-build linux/amd64 \
+	go-crosscompile-build darwin/386; \
+	go-crosscompile-build darwin/amd64; \
+	go-crosscompile-build linux/386; \
+	go-crosscompile-build linux/amd64
 
 golang-crosscompile:
 	git clone https://github.com/davecheney/golang-crosscompile.git
