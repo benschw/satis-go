@@ -1,3 +1,5 @@
+SHELL=/bin/bash
+
 default: build
 
 clean:
@@ -5,8 +7,8 @@ clean:
 	rm -rf admin-ui
 	rm -rf satis-go
 	rm -rf data
-	rm -rf lib
-	rm -rf conposer.phar
+	rm -rf golang-crosscompile
+	rm -rf release
 
 deps:
 	go get
@@ -22,4 +24,27 @@ admin-ui:
 	curl -sS https://drone.io/github.com/benschw/satis-admin/files/admin-ui.tar.gz | tar xzv
 
 
-.PHONY: satis admin-ui
+release: deps golang-crosscompile golang-buildsetup
+	source golang-crosscompile/crosscompile.bash; \
+	mkdir -p release; \
+	go-darwin-386 build -o satis-go; \
+	gzip -c satis-go > release/satis-go-darwin-386.gz; \
+	go-darwin-amd64 build -o satis-go; \
+	gzip -c satis-go > release/satis-go-darwin-amd64.gz; \
+	go-linux-386 build -o satis-go; \
+	gzip -c satis-go > release/satis-go-linux-386.gz; \
+	go-linux-amd64 build -o satis-go; \
+	gzip -c satis-go > release/satis-go-linux-amd64.gz
+
+golang-buildsetup: golang-crosscompile
+	source golang-crosscompile/crosscompile.bash; \
+	go-crosscompile-build darwin/386 \
+	go-crosscompile-build darwin/amd64 \
+	go-crosscompile-build linux/386 \
+	go-crosscompile-build linux/amd64 \
+
+golang-crosscompile:
+	git clone https://github.com/davecheney/golang-crosscompile.git
+
+
+.PHONY: admin-ui

@@ -8,3 +8,6 @@ test-data
 
 admin-ui
 repo-ui
+
+release
+golang-crosscompile
