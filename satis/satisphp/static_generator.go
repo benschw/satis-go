@@ -1,9 +1,10 @@
 package satisphp
 
 import (
-	"github.com/benschw/satis-go/satis/satisphp/db"
 	"log"
 	"os/exec"
+
+	"github.com/benschw/satis-go/satis/satisphp/db"
 )
 
 var _ = log.Print
@@ -19,9 +20,11 @@ type StaticWebGenerator struct {
 
 func (s *StaticWebGenerator) Generate() error {
 	log.Print("Generating...")
-	_, err := exec.
+	out, err := exec.
 		Command("satis", "--no-interaction", "build", s.DbPath+db.StagingFile, s.WebPath).
-		Output()
-
+		CombinedOutput()
+	if err != nil {
+		log.Printf("Satis Generation Error: %s", string(out[:]))
+	}
 	return err
 }
