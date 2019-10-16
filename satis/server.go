@@ -65,6 +65,7 @@ func (s *Server) Run() error {
 	r.HandleFunc("/api/repo", resource.findAllRepos).Methods("GET")
 	r.HandleFunc("/api/repo/{id}", resource.deleteRepo).Methods("DELETE")
 	r.HandleFunc("/api/generate-web-job", resource.generateStaticWeb).Methods("POST")
+	r.HandleFunc("/api/generate-package", resource.generatePackageStaticWeb).Methods("POST")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir(s.WebPath)))
 
 	//	r.Handle("/dist/{rest}", http.StripPrefix("/dist/", http.FileServer(http.Dir("./dist/"))))

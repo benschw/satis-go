@@ -168,6 +168,21 @@ func (s *MySuite) TestGenerateWeb(c *C) {
 
 	// when
 	err := client.GenerateStaticWeb()
+	time.Sleep(time.Millisecond)// Wait generation process consume
+
+	// then
+	c.Assert(err, Equals, nil)
+
+	c.Assert(s.stubGenerator.runs, Equals, 1)
+}
+
+func (s *MySuite) TestGeneratePackageWeb(c *C) {
+	// given
+	client := &client.SatisClient{Host: s.s.Homepage}
+
+	// when
+	err := client.GeneratePackageStaticWeb("foo/package")
+	time.Sleep(time.Millisecond) // Wait generation process consume
 
 	// then
 	c.Assert(err, Equals, nil)
@@ -181,6 +196,11 @@ type StubGenerator struct {
 }
 
 func (s *StubGenerator) Generate() error {
+	s.runs++
+	return nil
+}
+
+func (s *StubGenerator) GeneratePackage(string) error {
 	s.runs++
 	return nil
 }
