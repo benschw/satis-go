@@ -189,8 +189,8 @@ func (r *SatisResource) generateStaticWeb(res http.ResponseWriter, req *http.Req
 }
 
 // Regenerate package static web docs
-func (r *SatisResource) generatePackageStaticWeb(res http.ResponseWriter, req *http.Request) {
-	pack := &api.Package{}
+func (r *SatisResource) generateRepository(res http.ResponseWriter, req *http.Request) {
+	pack := &api.Repo{}
 
 	// unmarshal post body
 	decoder := json.NewDecoder(req.Body)
@@ -200,7 +200,7 @@ func (r *SatisResource) generatePackageStaticWeb(res http.ResponseWriter, req *h
 		return
 	}
 
-	if err := r.SatisPhpClient.GeneratePackageSatisWeb(pack.Name); err != nil {
+	if err := r.SatisPhpClient.GenerateRepository(pack.Url); err != nil {
 		log.Print(err)
 
 		res.WriteHeader(http.StatusInternalServerError)

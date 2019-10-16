@@ -80,10 +80,10 @@ func (c *SatisClient) GenerateStaticWeb() error {
 	return processResponseEntity(req, nil, http.StatusCreated)
 }
 
-func (c *SatisClient) GeneratePackageStaticWeb(packageName string) error {
-	url := fmt.Sprintf("%s/api/generate-package", c.Host)
+func (c *SatisClient) GenerateRepository(repoUrl string) error {
+	url := fmt.Sprintf("%s/api/generate-repository", c.Host)
 
-	req, err := makeRequest("POST", url, &api.Package{Name: packageName})
+	req, err := makeRequest("POST", url, api.NewRepo("", repoUrl))
 	if err != nil {
 		return err
 	}

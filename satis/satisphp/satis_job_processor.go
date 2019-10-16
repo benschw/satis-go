@@ -17,11 +17,11 @@ type SatisJobProcessor struct {
 // Run jobs added to Jobs chan
 func (s *SatisJobProcessor) ProcessUpdates() {
 	genCh := make(chan *db.SatisDbManager, 10)
-	genPackageCh := make(chan string, 10)
+	genRepoCh := make(chan string, 10)
 	genExit := make(chan error, 1)
 
 	go s.processGenerateJobs(genCh, genExit)
-	go s.processGeneratePackageJobs(genPackageCh, genExit)
+	go s.processGenerateRepoJobs(genRepoCh, genExit)
 
 	for {
 		j := <-s.Jobs
@@ -38,7 +38,7 @@ func (s *SatisJobProcessor) ProcessUpdates() {
 
 		// Generate repo Static Web
 		case *job.GenerateRepoJob:
-			genPackageCh <- currentJob.PackageName()
+			genRepoCh <- currentJob.RepoUrl()
 
 		// Exit the generation goroutine
 		case *job.ExitJob:
@@ -77,12 +77,12 @@ func (s *SatisJobProcessor) processGenerateJobs(genCh chan *db.SatisDbManager, g
 }
 
 
-func (s *SatisJobProcessor) processGeneratePackageJobs(genPackageCh chan string, genExit chan error) {
+func (s *SatisJobProcessor) processGenerateRepoJobs(genPackageCh chan string, genExit chan error) {
 	for {
-		packageName := <-genPackageCh
+		repoUrl := <-genPackageCh
 
 		// Do Static Site Package Generation
-		if err := s.Generator.GeneratePackage(packageName); err != nil {
+		if err := s.Generator.GenerateRepo(repoUrl); err != nil {
 			log.Print(err)
 		}
 	}

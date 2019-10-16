@@ -176,12 +176,12 @@ func (s *MySuite) TestGenerateWeb(c *C) {
 	c.Assert(s.stubGenerator.runs, Equals, 1)
 }
 
-func (s *MySuite) TestGeneratePackageWeb(c *C) {
+func (s *MySuite) TestGenerateRepository(c *C) {
 	// given
 	client := &client.SatisClient{Host: s.s.Homepage}
 
 	// when
-	err := client.GeneratePackageStaticWeb("foo/package")
+	err := client.GenerateRepository("git@gitlab.com/foo/package")
 	time.Sleep(time.Millisecond) // Wait generation process consume
 
 	// then
@@ -200,7 +200,7 @@ func (s *StubGenerator) Generate() error {
 	return nil
 }
 
-func (s *StubGenerator) GeneratePackage(string) error {
+func (s *StubGenerator) GenerateRepo(string) error {
 	s.runs++
 	return nil
 }
