@@ -21,6 +21,7 @@ func (s *SatisJobProcessor) ProcessUpdates() {
 	genExit := make(chan error, 1)
 
 	go s.processGenerateJobs(genCh, genExit)
+	go s.processGeneratePackageJobs(genPackageCh, genExit)
 
 	for {
 		j := <-s.Jobs
