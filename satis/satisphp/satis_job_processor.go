@@ -17,15 +17,17 @@ type SatisJobProcessor struct {
 // Run jobs added to Jobs chan
 func (s *SatisJobProcessor) ProcessUpdates() {
 	genCh := make(chan *db.SatisDbManager, 10)
+	genRepoCh := make(chan string, 10)
 	genExit := make(chan error, 1)
 
 	go s.processGenerateJobs(genCh, genExit)
+	go s.processGenerateRepoJobs(genRepoCh, genExit)
 
 	for {
 		j := <-s.Jobs
 		err := j.Run()
 
-		switch j.(type) {
+		switch currentJob := j.(type) {
 		// Generate Static Web
 		case *job.GenerateJob:
 			dbMgr := db.SatisDbManager{Path: s.DbPath}
@@ -33,6 +35,11 @@ func (s *SatisJobProcessor) ProcessUpdates() {
 			if err = dbMgr.Load(); err == nil {
 				genCh <- &dbMgr
 			}
+
+		// Generate repo Static Web
+		case *job.GenerateRepoJob:
+			genRepoCh <- currentJob.RepoUrl()
+
 		// Exit the generation goroutine
 		case *job.ExitJob:
 			genCh <- nil
@@ -64,6 +71,18 @@ func (s *SatisJobProcessor) processGenerateJobs(genCh chan *db.SatisDbManager, g
 
 		// Do Static Site Generation
 		if err := s.Generator.Generate(); err != nil {
+			log.Print(err)
+		}
+	}
+}
+
+
+func (s *SatisJobProcessor) processGenerateRepoJobs(genPackageCh chan string, genExit chan error) {
+	for {
+		repoUrl := <-genPackageCh
+
+		// Do Static Site Package Generation
+		if err := s.Generator.GenerateRepo(repoUrl); err != nil {
 			log.Print(err)
 		}
 	}

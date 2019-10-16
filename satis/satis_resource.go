@@ -38,7 +38,7 @@ func (r *SatisResource) addRepo(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(http.StatusInternalServerError)
 	}
 
-	res.Header().Set("Location", fmt.Sprintf("%s/api/repo/%d", r.Host, repo.Id))
+	res.Header().Set("Location", fmt.Sprintf("%s/api/repo/%s", r.Host, repo.Id))
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusCreated)
 	fmt.Fprint(res, body)
@@ -178,6 +178,29 @@ func (r *SatisResource) deleteRepo(res http.ResponseWriter, req *http.Request) {
 // Regenerate static web docs
 func (r *SatisResource) generateStaticWeb(res http.ResponseWriter, req *http.Request) {
 	if err := r.SatisPhpClient.GenerateSatisWeb(); err != nil {
+		log.Print(err)
+
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	res.WriteHeader(http.StatusCreated)
+	res.Header().Set("Content-Type", "application/json")
+}
+
+// Regenerate package static web docs
+func (r *SatisResource) generateRepository(res http.ResponseWriter, req *http.Request) {
+	pack := &api.Repo{}
+
+	// unmarshal post body
+	decoder := json.NewDecoder(req.Body)
+	if err := decoder.Decode(pack); err != nil {
+		log.Print(err)
+		res.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if err := r.SatisPhpClient.GenerateRepository(pack.Url); err != nil {
 		log.Print(err)
 
 		res.WriteHeader(http.StatusInternalServerError)

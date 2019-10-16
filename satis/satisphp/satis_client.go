@@ -110,6 +110,11 @@ func (s *SatisClient) GenerateSatisWeb() error {
 	return s.performJob(j)
 }
 
+func (s *SatisClient) GenerateRepository(packageName string) error {
+	j := job.NewGenerateRepoJob(packageName)
+	return s.performJob(j)
+}
+
 func (s *SatisClient) Shutdown() error {
 	j := job.NewExitJob()
 	return s.performJob(j)

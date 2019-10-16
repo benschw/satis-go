@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	"github.com/benschw/satis-go/satis/satisphp/api"
 	"log"
 	"net/http"
@@ -73,6 +74,16 @@ func (c *SatisClient) GenerateStaticWeb() error {
 	url := c.Host + "/api/generate-web-job"
 
 	req, err := makeRequest("POST", url, nil)
+	if err != nil {
+		return err
+	}
+	return processResponseEntity(req, nil, http.StatusCreated)
+}
+
+func (c *SatisClient) GenerateRepository(repoUrl string) error {
+	url := fmt.Sprintf("%s/api/generate-repository", c.Host)
+
+	req, err := makeRequest("POST", url, api.NewRepo("", repoUrl))
 	if err != nil {
 		return err
 	}

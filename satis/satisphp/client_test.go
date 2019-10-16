@@ -25,6 +25,12 @@ func (s *StubGenerator) Generate() error {
 	return nil
 }
 
+func (s *StubGenerator) GenerateRepo(repoPackage string) error {
+	time.Sleep(100 * time.Millisecond)
+	s.runs++
+	return nil
+}
+
 var gen *StubGenerator
 
 func ARandomClient() *SatisClient {
