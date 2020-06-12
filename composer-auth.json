@@ -1,0 +1,5 @@
+{
+    "github-oauth": {
+        "github.com": "GITHUB_API_KEY"
+    }
+}

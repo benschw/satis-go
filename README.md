@@ -2,6 +2,17 @@
 [![GoDoc](http://godoc.org/github.com/benschw/satis-go?status.png)](http://godoc.org/github.com/benschw/satis-go)
 
 
+# docker branch notes
+
+	generate github api key: https://github.com/settings/tokens/new
+
+	env GOOS=linux GOARCH=amd64 go build
+	docker build -t benschw/satis-go
+	docker run -d --rm -p 8080:80 \
+		-e "GITHUB_API_KEY=XXXXXXXXXXXXXXXXXX" \
+		--name=satis-go \
+		benschw/satis-go
+
 # Satis-go
 [download latest](https://drone.io/github.com/benschw/satis-go/files)
 
