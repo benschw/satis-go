@@ -21,7 +21,8 @@ satis-install:
 	rm ./composer.phar
 
 admin-ui:
-	curl -sS https://drone.io/github.com/benschw/satis-admin/files/admin-ui.tar.gz | tar xzv
+	curl -sS https://github.com/benschw/satis-admin/releases/download/0.1.1/admin-ui.tar.gz | tar xzv
+	#curl -sS https://drone.io/github.com/benschw/satis-admin/files/admin-ui.tar.gz | tar xzv
 
 
 dist: deps golang-crosscompile golang-buildsetup
@@ -47,4 +48,8 @@ golang-crosscompile:
 	git clone https://github.com/davecheney/golang-crosscompile.git
 
 
-.PHONY: admin-ui
+docker:
+	env GOOS=linux GOARCH=amd64 go build
+	docker build -t benschw/satis-go .
+
+.PHONY: admin-ui docker
